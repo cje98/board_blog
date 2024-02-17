@@ -23,6 +23,7 @@ public class JwtProvider {
         // 현재시간에서 1시간 추가한 날짜
         Date expiredDate = Date.from(Instant.now().plus(1, ChronoUnit.HOURS));
         
+        // ES256, HS256 상관없음
         String jwt = Jwts.builder()
                     .signWith(SignatureAlgorithm.ES256, secretKey)
                     .setSubject(email).setIssuedAt(new Date())

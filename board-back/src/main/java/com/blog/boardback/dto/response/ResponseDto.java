@@ -17,7 +17,7 @@ public class ResponseDto {
     private String message;
 
     public static ResponseEntity<ResponseDto> databaseError(){
-        ResponseDto responseBody = new ResponseDto(ResponseCode.DATABASE_ERROR,ResponseMessage.DATABASE_ERROR)
+        ResponseDto responseBody = new ResponseDto(ResponseCode.DATABASE_ERROR,ResponseMessage.DATABASE_ERROR);
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(responseBody);
     }
     // Dto 만들 때 마다 상속받아 확장해서 쓰도록 만들어줄거임.

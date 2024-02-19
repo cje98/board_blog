@@ -2,7 +2,6 @@ package com.blog.boardback.config;
 
 import java.io.IOException;
 
-import org.hibernate.internal.ExceptionConverterImpl;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpMethod;

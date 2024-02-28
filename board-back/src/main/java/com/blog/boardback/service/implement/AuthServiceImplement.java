@@ -5,10 +5,13 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.blog.boardback.dto.request.auth.SignInRequestDto;
 import com.blog.boardback.dto.request.auth.SignUpRequestDto;
 import com.blog.boardback.dto.response.ResponseDto;
+import com.blog.boardback.dto.response.auth.SignInResponseDto;
 import com.blog.boardback.dto.response.auth.SignUpResponseDto;
 import com.blog.boardback.entity.UserEntity;
+import com.blog.boardback.provider.JwtProvider;
 import com.blog.boardback.repository.UserRepository;
 import com.blog.boardback.service.AuthService;
 
@@ -20,6 +23,7 @@ public class AuthServiceImplement implements AuthService{
 
     // RequiredArgsConstructor + final : lombok이 생성자를 자동생성 해줌
     private final UserRepository userRepository;
+    private final JwtProvider jwtProvider;
 
     // 내부에서 의존성 주입할거임.
     private PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
@@ -57,6 +61,35 @@ public class AuthServiceImplement implements AuthService{
         }
 
         return SignUpResponseDto.success();
+    }
+
+    @Override
+    public ResponseEntity<? super SignInResponseDto> signIn(SignInRequestDto dto) {
+
+        String token = null;
+
+        try{
+
+            String email = dto.getEmail();
+            UserEntity userEntity = userRepository.findByEmail(email);
+            // 없으면 로그인 실패 처리
+            if (userEntity == null) return SignInResponseDto.signInFailed();
+
+            String password = dto.getPassword();
+            String encodedPassword = userEntity.getPassword();
+            // 비밀번호 맞는지 확인해야함.
+            boolean isMatched = passwordEncoder.matches(password, encodedPassword);
+            if (!isMatched) return SignInResponseDto.signInFailed();
+
+            token = jwtProvider.create(email);
+
+        }catch(Exception exception){
+            exception.printStackTrace();
+            return ResponseDto.databaseError();
+        }
+
+        return SignInResponseDto.success(token);
+
     }
     
 }

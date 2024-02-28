@@ -6,7 +6,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.blog.boardback.dto.request.auth.SignInRequestDto;
 import com.blog.boardback.dto.request.auth.SignUpRequestDto;
+import com.blog.boardback.dto.response.auth.SignInResponseDto;
 import com.blog.boardback.dto.response.auth.SignUpResponseDto;
 import com.blog.boardback.service.AuthService;
 
@@ -32,6 +34,14 @@ public class AuthController {
         // url 입력, Body > raw > json 선택 후 값 입력
         // Send
         
+    }
+
+    @PostMapping("/sign-in")
+    public ResponseEntity<? super SignInResponseDto> signIn(
+        @RequestBody @Valid SignInRequestDto requestBody
+    ){
+        ResponseEntity<? super SignInResponseDto> response = authService.signIn(requestBody);
+        return response;
     }
 
 }

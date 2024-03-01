@@ -12,7 +12,7 @@ interface Props{
     error: boolean;
 
     // ? : 옵셔널, 필수 X
-    icon?: string;
+    icon?: 'eye-light-off-icon' | 'eye-light-on-icon' | 'expand-right-light-icon';
     onButtonClick?: () => void;
     
     message?: string;
@@ -49,7 +49,7 @@ const InputBox = forwardRef<HTMLInputElement, Props>((props: Props, ref) => {
                 <input ref={ref} type={type} className='input' placeholder={placeholder} value={value} onChange={onChangeHandler} onKeyDown={onKeydownHandler}/>
                 {/* onButtonClick이 undefined이 아니면 컴포넌트 랜더링 됨 */}
                 {onButtonClick !== undefined && (
-                    <div className='icon-button'>
+                    <div className='icon-button' onClick={onButtonClick}>
                                                             {/* 템플릿 리터럴 사용 */}
                         {icon !== undefined && (<div className={`icon ${icon}`}></div>)}
                     </div>

@@ -20,5 +20,11 @@ public class ResponseDto {
         ResponseDto responseBody = new ResponseDto(ResponseCode.DATABASE_ERROR,ResponseMessage.DATABASE_ERROR);
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(responseBody);
     }
+
+    public static ResponseEntity<ResponseDto> validationFailed(){
+        ResponseDto responseBody = new ResponseDto(ResponseCode.VALIDATION_FAILED,ResponseMessage.VALIDATION_FAILED);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseBody);
+    }
+
     // Dto 만들 때 마다 상속받아 확장해서 쓰도록 만들어줄거임.
 }

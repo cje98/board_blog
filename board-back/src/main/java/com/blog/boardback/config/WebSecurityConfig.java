@@ -69,6 +69,9 @@ public class WebSecurityConfig {
         configuration.addAllowedMethod("*");
         configuration.addExposedHeader("*");
         
+        // CORS 오류 발생으로 헤더 추가
+        configuration.addAllowedHeader("*");
+        
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         
         // 모든 패턴에 대해서 configuration을 등록함

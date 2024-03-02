@@ -1,4 +1,4 @@
-import {KeyboardEvent, ChangeEvent, Dispatch, SetStateAction, forwardRef } from 'react';
+import {KeyboardEvent, ChangeEvent, forwardRef } from 'react';
 import './style.css';
 
 //          interface : Input Box 컴포넌트 Properties          //
@@ -8,7 +8,7 @@ interface Props{
     type: 'text' | 'password'; 
     placeholder: string;
     value: string;
-    setValue: Dispatch<SetStateAction<string>>;
+    onChange: (event: ChangeEvent<HTMLInputElement>) => void;
     error: boolean;
 
     // ? : 옵셔널, 필수 X
@@ -26,14 +26,7 @@ const InputBox = forwardRef<HTMLInputElement, Props>((props: Props, ref) => {
 
     //          state : properties          //
     const {label, type, error, placeholder, value, icon, message} = props;
-    const {setValue, onButtonClick, onKeyDown} = props;
-
-    //          event handler : input 키 이벤트 처리 함수          //
-    const onChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
-        const value = event.target.value;
-        // const {value} = event.target;
-        setValue(value);
-    }
+    const {onChange, onButtonClick, onKeyDown} = props;
 
     const onKeydownHandler = (event: KeyboardEvent<HTMLInputElement>) => {
         if(!onKeyDown) return;
@@ -46,7 +39,7 @@ const InputBox = forwardRef<HTMLInputElement, Props>((props: Props, ref) => {
             <div className='inputbox-label'>{label}</div>
             <div className={error ? 'inputbox-container-error' : 'inputbox-container'}>
                 {/* ref : 키보드 엔터치면 넘어가게 하는 역할 */}
-                <input ref={ref} type={type} className='input' placeholder={placeholder} value={value} onChange={onChangeHandler} onKeyDown={onKeydownHandler}/>
+                <input ref={ref} type={type} className='input' placeholder={placeholder} value={value} onChange={onChange} onKeyDown={onKeydownHandler}/>
                 {/* onButtonClick이 undefined이 아니면 컴포넌트 랜더링 됨 */}
                 {onButtonClick !== undefined && (
                     <div className='icon-button' onClick={onButtonClick}>

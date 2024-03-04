@@ -17,7 +17,7 @@ interface Props{
     
     message?: string;
 
-    // import 직접 넣어주면 됨
+    // KeyboardEvent import 안되면 직접 넣어주기
     onKeyDown?: (event: KeyboardEvent<HTMLInputElement>)=> void;
 }
 
@@ -28,6 +28,7 @@ const InputBox = forwardRef<HTMLInputElement, Props>((props: Props, ref) => {
     const {label, type, error, placeholder, value, icon, message} = props;
     const {onChange, onButtonClick, onKeyDown} = props;
 
+    //          event handler : Input Box 키 다운 이벤트 처리          //
     const onKeydownHandler = (event: KeyboardEvent<HTMLInputElement>) => {
         if(!onKeyDown) return;
         onKeyDown(event);
@@ -49,7 +50,7 @@ const InputBox = forwardRef<HTMLInputElement, Props>((props: Props, ref) => {
                 )}
             </div>
             {message !== undefined &&(
-                <div className='inputbox-message'>{'비밀번호는 8자 이상 입력해주세요.'}</div>
+                <div className='inputbox-message'>{message}</div>
             )}
         </div>
 

@@ -1,5 +1,7 @@
 package com.blog.boardback.entity;
 
+import com.blog.boardback.dto.request.board.PostBoardRequestDto;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -9,6 +11,10 @@ import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.Date;
+import java.time.Instant;
+import java.text.SimpleDateFormat;
 
 @Getter
 @NoArgsConstructor
@@ -27,5 +33,20 @@ public class BoardEntity {
     private int commentCount;
     private int viewCount;
     private String writerEmail;
+
+    public BoardEntity(PostBoardRequestDto dto, String email){
+        
+        Date now = Date.from(Instant.now());
+        SimpleDateFormat SimpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String writeDateTime = SimpleDateFormat.format(now);
+
+        this.title = dto.getTitle();
+        this.content = dto.getContent();
+        this.writeDatetime = writeDateTime;
+        this.favoriteCount = 0;
+        this.commentCount = 0;
+        this.viewCount = 0;
+        this.writerEmail = email;
+    }
 
 }

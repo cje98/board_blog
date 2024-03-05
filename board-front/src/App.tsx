@@ -19,7 +19,7 @@ import { BOARD_DETAIL_PATH } from 'constant';
 import { BOARD_UPDATE_PATH } from 'constant';
 
 //          component : Application 컴포넌트          //
-function App() {
+const App = () => {
   
   //          render : Application 렌더링          //
   // description : 메인 화면 > '/' - Main(컴포넌트명) //

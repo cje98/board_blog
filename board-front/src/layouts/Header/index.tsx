@@ -25,16 +25,22 @@ export default function Header() {
 
   //          state : 인증 페이지 상태          //
   const [isAuthPage, setAuthPage] = useState<boolean>(false);
+
   //          state : 메인 페이지 상태          //
   const [isMainPage, setMainPage] = useState<boolean>(false);
+
   //          state : 검색 페이지 상태          //
   const [isSearchPage, setSearchPage] = useState<boolean>(false);
+
   //          state : 게시물 상세 페이지 상태          //
   const [isBoardDetailPage, setBoardDetailPage] = useState<boolean>(false);
+
   //          state : 게시물 작성 페이지 상태          //
   const [isBoardWritePage, setBoardWritePage] = useState<boolean>(false);
+
   //          state : 게시물 수정 페이지 상태          //
   const [isBoardUpdatePage, setBoardUpdatePage] = useState<boolean>(false);
+
   //          state : 유저 페이지 상태          //
   const [isUserPage, setUserPage] = useState<boolean>(false);
 
@@ -128,6 +134,7 @@ export default function Header() {
     //          event handler : 로그아웃 버튼 클릭 이벤트 처리 함수          //
     const onSignOutButtonClickHandler = () => {
       resetLoginUser();
+      setCookie('accessToken', '', { path: MAIN_PATH(), expires: new Date() });
       navigator(MAIN_PATH());
     }
 
@@ -190,6 +197,11 @@ export default function Header() {
     const isUserPage = pathname.startsWith(USER_PATH(''));
     setUserPage(isUserPage);
   }, [pathname]);
+
+  //          effect : login user가 변경될 때 마다 실행될 함수           //
+  useEffect( () => {
+    setLogin(loginUser !== null);
+  }, [loginUser]);
 
   //          render : 헤더 레이아웃 렌더링          //
   return (

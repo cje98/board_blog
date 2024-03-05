@@ -1,9 +1,8 @@
-import Footer from 'layouts/Footer';
 import './App.css';
 import { Route, Routes } from 'react-router-dom';
 import Main from 'views/Main';
 import Authentication from 'views/Authentication';
-import User from 'views/User';
+import UserP from 'views/User';
 import Search from 'views/Search';
 import BoardDetail from 'views/Board/Detail';
 import BoardWrite from 'views/Board/Write';
@@ -17,9 +16,46 @@ import { BOARD_PATH } from 'constant';
 import { BOARD_WRITE_PATH } from 'constant';
 import { BOARD_DETAIL_PATH } from 'constant';
 import { BOARD_UPDATE_PATH } from 'constant';
+import { useEffect } from 'react';
+import { useCookies } from 'react-cookie';
+import { useLoginUserStore } from 'stores';
+import { getSignInUserRequest } from 'apis';
+import { GetSignInUserResponseDto } from 'apis/response/user';
+import { ResponseDto } from 'apis/response';
+import { User } from 'types/interface';
 
 //          component : Application 컴포넌트          //
 const App = () => {
+
+  //          state : 로그인 유저 전역 상태          //
+  const { setLoginUser, resetLoginUser } = useLoginUserStore();
+
+  //          state : cookie 상태          //
+  const [cookies, setCookie] = useCookies();
+
+  //          function : get sign in user response 처리 함수          //
+  const getSignInUserResponse = (responseBody: GetSignInUserResponseDto | ResponseDto | null) => {
+    if (!responseBody) return;
+    const { code } = responseBody;
+    if ( code === 'AF' || code === 'NU' || code === 'DBE'){
+      resetLoginUser();
+      return;
+    }
+
+    // 스프레드 연산자 : '...' 기호, 배열이나 객체를 펼쳐서 해당 요소들을 개별적으로 처리할 때 사용
+    const loginUser:User = { ...responseBody as GetSignInUserResponseDto };
+    setLoginUser(loginUser);
+  }
+
+  //          effect : accessToken cookie 값이 변경될 때 마다 실행할 함수          //
+  useEffect( () => {
+    if (!cookies.accessToken){
+      resetLoginUser();
+      return;
+    }
+    getSignInUserRequest(cookies.accessToken).then(getSignInUserResponse);
+
+  }, [cookies.accessToken]);
   
   //          render : Application 렌더링          //
   // description : 메인 화면 > '/' - Main(컴포넌트명) //
@@ -37,7 +73,7 @@ const App = () => {
         <Route path={MAIN_PATH()} element={<Main />}/>
         <Route path={AUTH_PATH()} element={<Authentication />}/>
         <Route path={SEARCH_PATH(':searchWord')} element={<Search />}/>
-        <Route path={USER_PATH(':userEmail')} element={<User />}/>
+        <Route path={USER_PATH(':userEmail')} element={<UserP />}/>
         {/* 
           board가 공통되어 상/하위 라우트로 정의
           상위 라우트는 element 작성 안함(하위 라우트로 렌더링 하기 위함)

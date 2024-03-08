@@ -1,9 +1,12 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { ChangeEvent, useEffect, useRef, useState } from 'react';
 import './style.css';
 import { useBoardStore } from 'stores';
 
 //          component : 게시물 작성 화면 컴포넌트          //
 export default function BoardWrite() {
+
+  //          state : 제목 영역 요소 참조 상태          //
+  const titleRef = useRef<HTMLTextAreaElement | null>(null);
 
   //          state : 본문 영역 요소 참조 상태          //
   const contentRef = useRef<HTMLTextAreaElement | null>(null);
@@ -20,6 +23,69 @@ export default function BoardWrite() {
   //          state : 게시물 이미지 미리보기 URL 상태          //
   const [imageUrls, setImageUrls] = useState<string[]>([]);
 
+  //          event handler : 제목 변경 이벤트 처리          //
+  const onTitleChangeHandler = (event: ChangeEvent<HTMLTextAreaElement>) => {
+    const { value } = event.target;
+    setTitle(value);
+
+    if (!titleRef.current) return;
+    titleRef.current.style.height = 'auto';
+    titleRef.current.style.height = `${titleRef.current.scrollHeight}px`;
+  }
+
+  //          event handler : 내용 변경 이벤트 처리          //
+  const onContentChangeHandler = (event: ChangeEvent<HTMLTextAreaElement>) => {
+    const { value } = event.target;
+    setContent(value);
+
+    // 스크롤 없애기
+    if (!contentRef.current) return;
+    contentRef.current.style.height = 'auto';
+    contentRef.current.style.height = `${contentRef.current.scrollHeight}px`;
+  }
+
+  //          event handler : 이미지 변경 이벤트 처리          //
+  const onImageChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
+    // files가 없거나 길이가 0인 경우 리턴
+    if (!event.target.files || !event.target.files.length) return;
+    const file = event.target.files[0];
+    // 미리보기
+    const imageUrl = URL.createObjectURL(file);
+    // 복사
+    const newImageUrls = imageUrls.map(item => item);
+    newImageUrls.push(imageUrl);
+
+    setImageUrls(newImageUrls);
+
+    // 이미지 업로드
+    const newBoardImageFileList = boardImageFileList.map(item => item);
+    newBoardImageFileList.push(file); // 파일 자체 넣기
+    setBoardImageFileList(newBoardImageFileList);
+
+    // 같은 이미지 파일 업로드 가능하게 처리
+    if (!imageInputRef.current) return;
+    imageInputRef.current.value = '';
+  }
+
+  //          event handler : 이미지 업로드 버튼 클릭 이벤트 처리          //
+  const onImageUploadButtonClickHandler = () => {
+    if (!imageInputRef.current) return;
+    imageInputRef.current.click();
+  }
+
+  //          event handler : 이미지 닫기 버튼 클릭 이벤트 처리          //
+  const onImageCloseButtonClickHandler = (deleteIndex: number) => {
+    if (!imageInputRef.current) return;
+    imageInputRef.current.value = '';
+
+    // deleteIndex와 같지 않은 index만 가져오겠다.
+    const newImageUrls = imageUrls.filter((url, index) => index !== deleteIndex);
+    setImageUrls(newImageUrls);
+
+    const newBoardImageFileList = boardImageFileList.filter((url, index) => index !== deleteIndex);
+    setBoardImageFileList(newBoardImageFileList);
+  }
+
   //          effect : 마운트 시 실행할 함수          //
   useEffect(() => {
     resetBoard();
@@ -31,23 +97,26 @@ export default function BoardWrite() {
       <div className='board-write-container'>
         <div className='board-write-box'>
           <div className='board-write-title-box'>
-            <input className='board-write-title-input' type='text' placeholder='제목을 작성해주세요.' value={title}/>
+            <textarea ref={titleRef} className='board-write-title-textarea' rows={1} placeholder='제목을 작성해주세요.' value={title} onChange={onTitleChangeHandler} />
           </div>
           <div className='divider'></div>
           <div className='board-write-content-box'>
-            <textarea ref={contentRef} className='board-write-content-textarea' placeholder='본문을 작성해주세요.' value={content} />
-            <div className='icon-button'>
+            <textarea ref={contentRef} className='board-write-content-textarea' placeholder='본문을 작성해주세요.' value={content} onChange={onContentChangeHandler} />
+            <div className='icon-button' onClick={onImageUploadButtonClickHandler}>
               <div className='icon image-box-light-icon'></div>
             </div>
+            <input ref={imageInputRef} type='file' accept='image/*' style={{ display: 'none' }} onChange={onImageChangeHandler} />
           </div>
           <div className='board-write-images-box'>
+            {imageUrls.map((imageUrl, index) => 
             <div className='board-write-image-box'>
-              <img className='board-write-image' src='https://ojsfile.ohmynews.com/PHT_IMG_FILE/2024/0207/IE003258037_PHT.jpg' />
-              <div className='icon-button image-close'>
+              <img className='board-write-image' src={imageUrl} />
+                                                                  {/* 매개변수 있는 함수 > 화살표 함수 사용 */}
+              <div className='icon-button image-close' onClick={() => onImageCloseButtonClickHandler(index)}>
                 <div className='icon close-icon'></div>
               </div>
-              <input ref={imageInputRef} type='file' accept='image/*' style={{ display: 'none' }} />
             </div>
+            )}
           </div>
         </div>
       </div>

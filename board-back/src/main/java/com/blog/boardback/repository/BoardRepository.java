@@ -11,6 +11,8 @@ import com.blog.boardback.repository.resultSet.GetBoardResultSet;
 @Repository
 public interface BoardRepository extends JpaRepository<BoardEntity, Integer>{
     
+    //boolean existByBoardNumber(Integer boardNumber);
+
     BoardEntity findByBoardNumber(Integer boardNumber);
 
     // Native Query : 쿼리 직접 작성, ; 없애야 함

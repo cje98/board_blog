@@ -4,15 +4,19 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.blog.boardback.dto.request.board.PostBoardRequestDto;
+import com.blog.boardback.dto.request.board.PostCommentRequestDto;
 import com.blog.boardback.dto.response.ResponseDto;
 import com.blog.boardback.dto.response.board.GetBoardResponseDto;
 import com.blog.boardback.dto.response.board.GetFavoriteListResponseDto;
 import com.blog.boardback.dto.response.board.PostBoardResponseDto;
+import com.blog.boardback.dto.response.board.PostCommentResponseDto;
 import com.blog.boardback.dto.response.board.PutFavoriteResponseDto;
 import com.blog.boardback.entity.BoardEntity;
+import com.blog.boardback.entity.CommentEntity;
 import com.blog.boardback.entity.FavoriteEntity;
 import com.blog.boardback.entity.ImageEntity;
 import com.blog.boardback.repository.BoardRepository;
+import com.blog.boardback.repository.CommentRepository;
 import com.blog.boardback.repository.FavoriteRepository;
 import com.blog.boardback.repository.ImageRepository;
 import com.blog.boardback.repository.UserRepository;
@@ -32,6 +36,7 @@ public class BoardServiceImplement implements BoardService{
     private final BoardRepository boardRepository;
     private final ImageRepository imageRepository;
     private final UserRepository  userRepository;
+    private final CommentRepository commentRepository;
     private final FavoriteRepository  favoriteRepository;
 
     @Override
@@ -110,6 +115,32 @@ public class BoardServiceImplement implements BoardService{
     }
 
     @Override
+    public ResponseEntity<? super PostCommentResponseDto> postComment(PostCommentRequestDto dto, Integer boardNumber, String email) {
+        try {
+            
+            BoardEntity boardEntity = boardRepository.findByBoardNumber(boardNumber);
+            if (boardEntity == null) return PostCommentResponseDto.noExistBoard();
+
+            boolean existedUser = userRepository.existsByEmail(email);
+            if (!existedUser) return PostCommentResponseDto.noExistUser();
+
+            CommentEntity commentEntity = new CommentEntity(dto, boardNumber, email);
+
+            commentRepository.save(commentEntity);
+
+            boardEntity.increaseCommentCount();
+            boardRepository.save(boardEntity);
+
+
+        } catch (Exception exception) {
+            exception.printStackTrace();
+            return ResponseDto.databaseError();
+        }
+
+        return PostCommentResponseDto.success();
+    }
+
+    @Override
     public ResponseEntity<? super PutFavoriteResponseDto> putFavorite(Integer boardNumber, String email) {
 
         try {
@@ -144,6 +175,7 @@ public class BoardServiceImplement implements BoardService{
         return PutFavoriteResponseDto.success();
 
     }
+
 
 
     

@@ -27,7 +27,7 @@ public class CommentEntity {
     private String content;
     private String writeDatetime;
     private String userEmail;
-    private int boardnumber;
+    private int boardNumber;
     
     public CommentEntity(PostCommentRequestDto dto, Integer boardNumber, String email){
         Date now = Date.from(Instant.now());
@@ -37,6 +37,6 @@ public class CommentEntity {
         this.content = dto.getContent();
         this.writeDatetime = writeDatetime;
         this.userEmail = email;
-        this.boardnumber = boardNumber;
+        this.boardNumber = boardNumber;
     }
 }

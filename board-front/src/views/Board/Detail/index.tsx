@@ -10,9 +10,9 @@ import defaultProfileImage from 'assets/image/default-profile-image.png';
 import { useLoginUserStore } from 'stores';
 import { useNavigate, useParams } from 'react-router-dom';
 import { BOARD_PATH, BOARD_UPDATE_PATH, MAIN_PATH, USER_PATH } from 'constant';
-import { getBoardRequest, increaseViewCountRequest } from 'apis';
+import { getBoardRequest, getCommentListRequest, getFavoriteListRequest, increaseViewCountRequest } from 'apis';
 import { ResponseDto } from 'apis/response';
-import { GetBoardResponseDto, IncreaseViewCountResponseDto } from 'apis/response/board';
+import { GetBoardResponseDto, GetCommentListResponseDto, GetFavoriteListResponseDto, IncreaseViewCountResponseDto } from 'apis/response/board';
 
 import dayjs from 'dayjs';
 // dayjs 사용법 : npm i dayjs
@@ -174,6 +174,41 @@ export default function BoardDetail() {
     //          state : 댓글  상태          //
     const [comment, setComment] = useState<string>('');
 
+    //          function : get favorite list response 처리 함수          //
+    const getFavoriteListResponse = (responseBody: GetFavoriteListResponseDto | ResponseDto | null) => {
+      if (!responseBody) return;
+      const { code } = responseBody;
+      if (code === 'NB') alert('존재하지 않는 게시물입니다.');
+      if (code === 'DBE') alert('데이터베이스 오류입니다.');
+      if (code !== 'SU') return;
+
+      // {...객체 as 타입} : 객체의 속성 중 일부 속성이 다른 경우 
+      //                     spread 연산자를 사용하여 새로운 객체로 복사 후 형 변환
+      // 객체 as 타입 : 객체의 모든 속성이 변환된 타입과 같은 경우 직접 형 변환
+      const { favoriteList } = responseBody as GetFavoriteListResponseDto;
+      setFavoriteList(favoriteList);
+
+      // 로그인 유저 email과 게시글 좋아요 누른 유저 email이 같으면 좋아요 표시되게 처리
+      if (!loginUser) {
+        setFavorite(false);
+        return;
+      }
+      const isFavorite = favoriteList.findIndex(favorite => favorite.email === loginUser.email) !== -1;
+      setFavorite(isFavorite);
+    }
+
+    //          function : get comment list response 처리 함수          //
+    const getCommentListResponse = (responseBody: GetCommentListResponseDto | ResponseDto | null) => {
+      if (!responseBody) return;
+      const { code } = responseBody;
+      if (code === 'NB') alert('존재하지 않는 게시물입니다.');
+      if (code === 'DBE') alert('데이터베이스 오류입니다.');
+      if (code !== 'SU') return;
+
+      const { commentList } = responseBody as GetCommentListResponseDto;
+      setCommentList(commentList);
+    }
+
     //          event handler : 좋아요 클릭 이벤트 처리          //
     const onFavoriteClickHandler = () => {
       setFavorite(!isFavorite);
@@ -206,8 +241,9 @@ export default function BoardDetail() {
 
     //          effect : 게시물 번호 path variable이 바뀔 때 마다 좋아요 및 댓글 리스트 불러오기           //
     useEffect(() => {
-      setFavoriteList(favoriteListMock);
-      setCommentList(commentListMock);
+      if (!boardNumber) return;
+      getFavoriteListRequest(boardNumber).then(getFavoriteListResponse);
+      getCommentListRequest(boardNumber).then(getCommentListResponse);
     }, [boardNumber]);
 
     //          render : 게시물 상세 하단 컴포넌트 렌더링          //

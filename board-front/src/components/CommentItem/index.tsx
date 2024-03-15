@@ -3,6 +3,7 @@ import './style.css';
 import { CommentListItem } from 'types/interface';
 import defaultProfileImage from 'assets/image/default-profile-image.png'
 
+import dayjs from 'dayjs';
 
 interface Props{
     commentListItem:CommentListItem;
@@ -11,16 +12,21 @@ interface Props{
 //          component : Comment List Item 컴포넌트          //
 export default function CommentItem( {commentListItem }: Props) {
 
-  //          properties          //
+  //          state : properties          //
   const {nickname, profileImage, writeDatetime, content} = commentListItem;
 
-  //          function : 네비게이션 함수          //
-  // const navigator = useNavigate();
+  //          function : 작성일 경과 시간          //
+  const getElapsedTime = () => {
+    const now = dayjs().add(9, 'hour');
+    const writetime = dayjs(writeDatetime);
 
-  //          event handler : 게시물 아이템 클릭 이벤트 처리 함수          //
-  const onClickHandler = () => {
-    //navigator(boardNumber);
+    const gap = now.diff(writetime, 's');
+    if (gap < 60) return `${gap}초 전`;
+    if (gap < 3600) return `${Math.floor(gap / 60)}분 전`;
+    if (gap < 86400) return `${Math.floor(gap / 3600)}시간 전`;
+    return `${Math.floor(gap / 86400)}일 전`;
   }
+  
 
   //          render : Comment List Item 컴포넌트 렌더링          //  
   return (
@@ -32,7 +38,7 @@ export default function CommentItem( {commentListItem }: Props) {
                 </div>
                 <div className='comment-list-item-nickname'>{nickname}</div>
                 <div className='comment-list-item-divider'>{'\|'}</div>
-                <div className='comment-list-item-time'>{writeDatetime}</div>
+                <div className='comment-list-item-time'>{getElapsedTime()}</div>
             </div>
             <div className='comment-list-item-main'>
                 <div className='comment-list-item-content'>

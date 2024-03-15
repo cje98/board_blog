@@ -1,5 +1,5 @@
 export default interface FavoriteListItem{
-    // email: string;
+    email: string;
     nickname: string;
     profileImage: string | null;
 }

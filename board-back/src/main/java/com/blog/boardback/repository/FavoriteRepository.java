@@ -10,6 +10,8 @@ import com.blog.boardback.entity.FavoriteEntity;
 import com.blog.boardback.entity.primaryKey.FavoritePk;
 import com.blog.boardback.repository.resultSet.GetFavoriteListResultSet;
 
+import jakarta.transaction.Transactional;
+
 // 모든 컬럼이 복합키인 경우 pk를 따로 만들어줘야함.
 @Repository
 public interface FavoriteRepository extends JpaRepository<FavoriteEntity, FavoritePk>{
@@ -30,5 +32,6 @@ public interface FavoriteRepository extends JpaRepository<FavoriteEntity, Favori
     )
     List<GetFavoriteListResultSet> getFavoriteList(Integer boardNumber);
 
-
+    @Transactional
+    void deleteByBoardNumber(Integer boardNumber);
 }

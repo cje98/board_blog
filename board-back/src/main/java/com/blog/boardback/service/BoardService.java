@@ -11,6 +11,7 @@ import com.blog.boardback.dto.response.board.PostBoardResponseDto;
 import com.blog.boardback.dto.response.board.PostCommentResponseDto;
 import com.blog.boardback.dto.response.board.PutFavoriteResponseDto;
 import com.blog.boardback.dto.response.board.IncreaseViewCountResponseDto;
+import com.blog.boardback.dto.response.board.DeleteBoardResponseDto;
 
 public interface BoardService {
     ResponseEntity<? super GetBoardResponseDto> getBoard(Integer boardNumber);
@@ -23,4 +24,6 @@ public interface BoardService {
     ResponseEntity<? super PutFavoriteResponseDto> putFavorite(Integer boardNumber, String email);
 
     ResponseEntity<? super IncreaseViewCountResponseDto> increaseViewCount(Integer boardNumber);
+
+    ResponseEntity<? super DeleteBoardResponseDto> deleteBoard(Integer boardNumber, String email);
 }

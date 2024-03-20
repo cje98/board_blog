@@ -36,7 +36,7 @@ const usePagination = <T>(countPerPage: number) => {
     const setViewPage = () => {
         const FIRST_INDEX = 10 * (currentSection - 1);
         const LAST_INDEX = totalPageList.length > 10 * currentSection ? 10 * currentSection : totalPageList.length;
-        const viewList = totalPageList.slice(FIRST_INDEX, LAST_INDEX);
+        const viewPageList = totalPageList.slice(FIRST_INDEX, LAST_INDEX);
         setViewPageList(viewPageList);
     };
 
@@ -59,10 +59,10 @@ const usePagination = <T>(countPerPage: number) => {
 
     // setViewPage가 바뀌면 setView도 바뀌지만, setView가 바뀔 때는 setViewPage는 안바뀜
     //          effect : current page가 변경될 때마다 실행할 작업          //
-    useEffect(() => { setView }, [currentPage]);
+    useEffect(setView, [currentPage]);
 
     //          effect : current section이 변경될 때마다 실행할 작업          //
-    useEffect(() => { setViewPage }, [currentPage]);
+    useEffect(setViewPage, [currentPage]);
 
     return {
         currentPage,

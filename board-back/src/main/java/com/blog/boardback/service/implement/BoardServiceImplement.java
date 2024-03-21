@@ -3,6 +3,7 @@ package com.blog.boardback.service.implement;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import com.blog.boardback.dto.request.board.PatchBoardRequestDto;
 import com.blog.boardback.dto.request.board.PostBoardRequestDto;
 import com.blog.boardback.dto.request.board.PostCommentRequestDto;
 import com.blog.boardback.dto.response.ResponseDto;
@@ -11,6 +12,7 @@ import com.blog.boardback.dto.response.board.GetBoardResponseDto;
 import com.blog.boardback.dto.response.board.GetCommentListResponseDto;
 import com.blog.boardback.dto.response.board.GetFavoriteListResponseDto;
 import com.blog.boardback.dto.response.board.IncreaseViewCountResponseDto;
+import com.blog.boardback.dto.response.board.PatchBoardResponseDto;
 import com.blog.boardback.dto.response.board.PostBoardResponseDto;
 import com.blog.boardback.dto.response.board.PostCommentResponseDto;
 import com.blog.boardback.dto.response.board.PutFavoriteResponseDto;
@@ -111,7 +113,7 @@ public class BoardServiceImplement implements BoardService{
 
         try {
             boolean existedEmail = userRepository.existsByEmail(email);
-            if (!existedEmail) return PostBoardResponseDto.notExistUser();
+            if (!existedEmail) return PostBoardResponseDto.noExistUser();
 
             BoardEntity boardEntity = new BoardEntity(dto, email);
             boardRepository.save(boardEntity);
@@ -198,6 +200,44 @@ public class BoardServiceImplement implements BoardService{
     }
 
     @Override
+    public ResponseEntity<? super PatchBoardResponseDto> patchBoard(PatchBoardRequestDto dto, Integer boardNumber, String email) {
+        
+        try {
+            
+            BoardEntity boardEntity = boardRepository.findByBoardNumber(boardNumber);
+            if (boardEntity == null) return PatchBoardResponseDto.noExistBoard();
+
+            boolean existedUser = userRepository.existsByEmail(email);
+            if (!existedUser) return PatchBoardResponseDto.noExistUser();
+
+            String writerEmail = boardEntity.getWriterEmail();
+            boolean isWriter = writerEmail.equals(email);
+            if (!isWriter) return PatchBoardResponseDto.noPermission();
+
+            boardEntity.patchBoard(dto);
+            boardRepository.save(boardEntity);
+
+            imageRepository.deleteByBoardNumber(boardNumber);
+            List<String> boardImageList = dto.getBoardImageList();
+            List<ImageEntity> imageEntities = new ArrayList<>();
+
+            for (String image: boardImageList){
+                ImageEntity imageEntity = new ImageEntity(boardNumber, image);
+                imageEntities.add(imageEntity);
+            }
+
+            imageRepository.saveAll(imageEntities);
+
+
+        } catch (Exception exception) {
+            exception.printStackTrace();
+            return ResponseDto.databaseError();
+        }
+
+        return PatchBoardResponseDto.success();
+    }
+
+    @Override
     public ResponseEntity<? super IncreaseViewCountResponseDto> increaseViewCount(Integer boardNumber) {
         try {
             BoardEntity boardEntity = boardRepository.findByBoardNumber(boardNumber);
@@ -213,7 +253,6 @@ public class BoardServiceImplement implements BoardService{
         return IncreaseViewCountResponseDto.success();
 
     }
-
 
     @Override
     public ResponseEntity<? super DeleteBoardResponseDto> deleteBoard(Integer boardNumber, String email) {
@@ -244,11 +283,4 @@ public class BoardServiceImplement implements BoardService{
         return DeleteBoardResponseDto.success();
 
     }
-
-   
-
-
-
-    
-    
 }

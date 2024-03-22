@@ -69,7 +69,7 @@ export default function BoardDetail() {
       if (code === 'NB') alert('존재하지 않는 게시물입니다.');
       if (code === 'DBE') alert('데이터베이스 오류입니다.');
       if (code !== 'SU') {
-        navigator(MAIN_PATH())
+        navigator(MAIN_PATH());
         return;
       }
 

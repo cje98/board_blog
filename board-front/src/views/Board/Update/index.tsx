@@ -39,7 +39,7 @@ export default function BoardWrite() {
   const [imageUrls, setImageUrls] = useState<string[]>([]);
 
   //          function : 네비게이트 함수           //
-  const navigator = useNavigate();
+  const navigate = useNavigate();
 
   //          function : get board response 처리 함수          //
   const getBoardResponse = (responseBody: GetBoardResponseDto | ResponseDto | null) => {
@@ -48,7 +48,7 @@ export default function BoardWrite() {
       if (code === 'NB') alert('존재하지 않는 게시물입니다.');
       if (code === 'DBE') alert('데이터베이스 오류입니다.');
       if (code !== 'SU') {
-        navigator(MAIN_PATH());
+        navigate(MAIN_PATH());
         return;
       }
 
@@ -62,7 +62,7 @@ export default function BoardWrite() {
 
       // 로그인이 안되어있거나 작성 권한 없으면 메인 페이지로 리턴
       if (!loginUser || loginUser.email !== writerEmail) {
-        navigator(MAIN_PATH());
+        navigate(MAIN_PATH());
         return;
       }
       if (!contentRef.current) return;
@@ -137,7 +137,7 @@ export default function BoardWrite() {
   useEffect(() => {
     const accessToken = cookies.accessToken;
     if (!accessToken) {
-      navigator(MAIN_PATH());
+      navigate(MAIN_PATH());
       return;
     }
     if (!boardNumber) return;

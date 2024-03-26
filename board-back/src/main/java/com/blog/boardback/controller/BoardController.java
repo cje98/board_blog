@@ -25,6 +25,7 @@ import com.blog.boardback.dto.response.board.GetLatestBoardListResponseDto;
 import com.blog.boardback.dto.response.board.PutFavoriteResponseDto;
 import com.blog.boardback.dto.response.board.IncreaseViewCountResponseDto;
 import com.blog.boardback.dto.response.board.PatchBoardResponseDto;
+import com.blog.boardback.dto.response.board.GetTop3BoardListResponseDto;
 import com.blog.boardback.service.BoardService;
 
 import jakarta.validation.Valid;
@@ -72,6 +73,12 @@ public class BoardController {
     @GetMapping("/latest-list")
     public ResponseEntity<? super GetLatestBoardListResponseDto> getLatestBoardList() {
         ResponseEntity<? super GetLatestBoardListResponseDto> response = boardService.getLatestBoardList();
+        return response;
+    }
+
+    @GetMapping("/top-3")
+    public ResponseEntity<? super GetTop3BoardListResponseDto> getTop3BoardList() {
+        ResponseEntity<? super GetTop3BoardListResponseDto> response = boardService.getTop3BoardList();
         return response;
     }
 

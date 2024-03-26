@@ -1,5 +1,12 @@
 package com.blog.boardback.service.implement;
 
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Date;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+import java.text.SimpleDateFormat;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -12,6 +19,7 @@ import com.blog.boardback.dto.response.board.GetBoardResponseDto;
 import com.blog.boardback.dto.response.board.GetCommentListResponseDto;
 import com.blog.boardback.dto.response.board.GetFavoriteListResponseDto;
 import com.blog.boardback.dto.response.board.GetLatestBoardListResponseDto;
+import com.blog.boardback.dto.response.board.GetTop3BoardListResponseDto;
 import com.blog.boardback.dto.response.board.IncreaseViewCountResponseDto;
 import com.blog.boardback.dto.response.board.PatchBoardResponseDto;
 import com.blog.boardback.dto.response.board.PostBoardResponseDto;
@@ -32,9 +40,6 @@ import com.blog.boardback.repository.resultSet.GetBoardResultSet;
 import com.blog.boardback.repository.resultSet.GetCommentListResultSet;
 import com.blog.boardback.repository.resultSet.GetFavoriteListResultSet;
 import com.blog.boardback.service.BoardService;
-
-import java.util.List;
-import java.util.ArrayList;
 
 import lombok.RequiredArgsConstructor;
 
@@ -126,6 +131,26 @@ public class BoardServiceImplement implements BoardService{
             return ResponseDto.databaseError();
         }
         return GetLatestBoardListResponseDto.success(boardListViewEntities);
+    }
+
+    @Override
+    public ResponseEntity<? super GetTop3BoardListResponseDto> getTop3BoardList() {
+
+        List<BoardListViewEntity> boardListViewEntities = new ArrayList<>();
+
+        try {
+            // 일주일 전 날짜 지정
+            Date beforeWeek = Date.from(Instant.now().minus(7, ChronoUnit.DAYS));
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            String sevenDaysAgo = simpleDateFormat.format(beforeWeek);
+
+            boardListViewEntities = boardListViewRepository.findTop3ByWriteDatetimeGreaterThanOrderByFavoriteCountDescCommentCountDescViewCountDescWriteDatetimeDesc(sevenDaysAgo);
+            
+        } catch (Exception exception) {
+            exception.printStackTrace();
+            return ResponseDto.databaseError();
+        }
+        return GetTop3BoardListResponseDto.success(boardListViewEntities);
     }
 
     @Override
@@ -303,6 +328,8 @@ public class BoardServiceImplement implements BoardService{
         return DeleteBoardResponseDto.success();
 
     }
+
+
 
 
 }

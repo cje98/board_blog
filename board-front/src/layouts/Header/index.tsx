@@ -204,8 +204,8 @@ export default function Header() {
 
       const boardImageList: string[] = [];
       
-      // 동기 처리 해줘야 함.
-      for (const file of boardImageList) {
+      // 동기 처리 해줘야 함.(forEach 함수 사용 안됨)
+      for (const file of boardImageFileList) {
         const data = new FormData();
         data.append('file', file);
 

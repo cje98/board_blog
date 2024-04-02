@@ -22,6 +22,7 @@ import com.blog.boardback.dto.response.board.GetBoardResponseDto;
 import com.blog.boardback.dto.response.board.GetCommentListResponseDto;
 import com.blog.boardback.dto.response.board.GetFavoriteListResponseDto;
 import com.blog.boardback.dto.response.board.GetLatestBoardListResponseDto;
+import com.blog.boardback.dto.response.board.GetSearchBoardListResponseDto;
 import com.blog.boardback.dto.response.board.PutFavoriteResponseDto;
 import com.blog.boardback.dto.response.board.IncreaseViewCountResponseDto;
 import com.blog.boardback.dto.response.board.PatchBoardResponseDto;
@@ -80,6 +81,18 @@ public class BoardController {
     public ResponseEntity<? super GetTop3BoardListResponseDto> getTop3BoardList() {
         ResponseEntity<? super GetTop3BoardListResponseDto> response = boardService.getTop3BoardList();
         return response;
+    }
+
+    // EndPoint가 두 개지만 하나의 메소드로 작성해줌
+    // PathVariable은 기본적으로 필수로 파라미터를 받기 때문에 required = false 처리
+    @GetMapping(value={"/search-list/{searchWord}", "/search-list/{searchWord}/{preSearchWord}"})
+    public ResponseEntity<? super GetSearchBoardListResponseDto> getSearchBoardList(
+        @PathVariable("searchWord") String searchWord,
+        @PathVariable(value="preSearchWord", required = false) String preSearchWord
+    ){
+        ResponseEntity<? super GetSearchBoardListResponseDto> response = boardService.getSearchBoardList(searchWord, preSearchWord);
+        return response;
+
     }
 
     @PostMapping("")

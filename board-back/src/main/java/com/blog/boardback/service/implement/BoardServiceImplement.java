@@ -179,7 +179,7 @@ public class BoardServiceImplement implements BoardService{
             }
 
         } catch (Exception exception) {
-            exception.printStackTrace();;
+            exception.printStackTrace();
             return ResponseDto.databaseError();
         }
         

@@ -17,4 +17,6 @@ public interface BoardListViewRepository extends JpaRepository<BoardListViewEnti
     // Contains > like와 같음, 특정 단어 포함하는지 확인
     List<BoardListViewEntity> findByTitleContainsOrContentContainsOrderByWriteDatetimeDesc(String title, String content);
 
+    List<BoardListViewEntity> findByWriterEmailOrderByWriteDatetimeDesc(String writerEmail);
+
 }

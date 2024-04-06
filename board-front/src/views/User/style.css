@@ -74,6 +74,8 @@
     background: none;
     padding: 0;
 
+    display: inline-block;
+
     padding-block: 0px;
     padding-inline: 0px;
 

@@ -30,6 +30,12 @@ export default function User() {
     //          state : 프로필 이미지 상태          //
     const [profileImage, setProfileImage] = useState<string | null>(null);
 
+    //          event handler : 닉네임 수정 버튼 클릭 이벤트 처리          //
+    const onNicknameButtonClickHandler = () => {
+      setChangeNickname(nickname);
+      setNicknameChange(!isNicknameChange);
+    }
+
     //          effect : user email path variable 변경 시 실행할 함수          //
     useEffect( () => {
       if (!userEmail) return;
@@ -45,10 +51,8 @@ export default function User() {
           <div className='user-top-my-profile-image-box'>
             {profileImage !== null ?
             <div className='user-top-profile-image' style={{backgroundImage:`url(${profileImage})`}}></div> :
-            <div className='user-top-my-profile-image-nothing-box'>
-              <div className='icon-box-large'>
-                <div className='icon image-box-white-icon'></div>
-              </div>
+            <div className='icon-box-large'>
+              <div className='icon image-box-white-icon'></div>
             </div>
             }
             <input ref={imageInputRef} type='file' accept='image/*' style={{display: 'none'}} />
@@ -63,7 +67,7 @@ export default function User() {
               <input className='user-top-info-nickname-input' type='text' size={nickname.length + 1} value={changeNickname} /> :
               <div className='user-top-info-nickname'>{nickname}</div>
               }
-              <div className='icon-button'>
+              <div className='icon-button' onClick={onNicknameButtonClickHandler}>
                 <div className='icon edit-icon'></div>
               </div>
               </> :

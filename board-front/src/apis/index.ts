@@ -280,7 +280,7 @@ export const getRelationListRequest = async (searchWord: string) => {
 }
 
 const GET_USER_URL = (email: string) => `${API_DOMAIN}/user/${email}`;
-const GET_SIGN_IN_USER_URL = () => `${API_DOMAIN}/user/`;
+const GET_SIGN_IN_USER_URL = () => `${API_DOMAIN}/user`;
 const PATCH_NICKNAME_URL = () => `${API_DOMAIN}/user/nickname`;
 const PATCH_PROFILE_IMAGE_URL = () => `${API_DOMAIN}/user/profile-image`;
 

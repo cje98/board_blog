@@ -72,6 +72,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter{
 
         if(!hasAuthorization) return null;
 
+        // bearer 인증 방식인지 확인
         boolean isBearer = authorization.startsWith("Bearer ");
         if(!isBearer) return null;
 

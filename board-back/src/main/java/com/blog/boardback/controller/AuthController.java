@@ -20,8 +20,11 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class AuthController {
 
+    // @RequiredArgsConstructor : 클래스 내의 final로 선언된 필드를 사용하여 생성자 자동 생성 + final 필드 의존성 주입 처리
     private final AuthService authService;
     
+    // @Valid : SignUpResponseDto 객체 유효성 검사 확인
+    // <? super 타입> : 타입 또는 그 타입의 상위 클래스를 응답으로 사용할 수 있음
     @PostMapping("/sign-up")
     public ResponseEntity<? super SignUpResponseDto> signUp(
         @RequestBody @Valid SignUpRequestDto requestBody

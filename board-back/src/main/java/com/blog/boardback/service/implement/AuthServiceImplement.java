@@ -18,14 +18,14 @@ import com.blog.boardback.service.AuthService;
 import lombok.RequiredArgsConstructor;
 
 @Service
-@RequiredArgsConstructor // 생성자 자동 생성해줌
+@RequiredArgsConstructor
 public class AuthServiceImplement implements AuthService{
 
     // RequiredArgsConstructor + final : lombok이 생성자를 자동생성 해줌
     private final UserRepository userRepository;
     private final JwtProvider jwtProvider;
 
-    // 내부에서 의존성 주입할거임.
+    // 내부에서 BCryptPasswordEncoder 인스턴스로 초기화되어 클래스 내부에서 의존성 주입
     private PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     @Override
@@ -81,6 +81,7 @@ public class AuthServiceImplement implements AuthService{
             boolean isMatched = passwordEncoder.matches(password, encodedPassword);
             if (!isMatched) return SignInResponseDto.signInFailed();
 
+            // jwt로 인증
             token = jwtProvider.create(email);
 
         }catch(Exception exception){
